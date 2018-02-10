@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+
 namespace dotNetCore2WebApi
 {
     public class Startup
@@ -19,12 +20,12 @@ namespace dotNetCore2WebApi
         {
             Configuraton = configuration;
         }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuraton.GetConnectionString("DefaultConnection")));
-            services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("HelloWorld"));
+            services.AddDbContext<BlogDbContext>(options => options.UseSqlServer(Configuraton.GetConnectionString("DefaultConnection")));
             services.AddMvc();
         }
 
@@ -40,7 +41,7 @@ namespace dotNetCore2WebApi
 
             app.Run(async (context) =>
             {
-                await context.Response.WriteAsync("MVS didn't run!");
+                await context.Response.WriteAsync("MVC didn't run!");
             });
         }
     }

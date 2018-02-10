@@ -11,57 +11,57 @@ using dotNetCore2WebApi.Entities;
 namespace dotNetCore2WebApi.Controllers
 {
     [Produces("application/json")]
-    [Route("api/[controller]")]
-    public class ArticlesController : Controller
+    [Route("api/Posts")]
+    public class PostsController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly BlogDbContext _context;
 
-        public ArticlesController(AppDbContext context)
+        public PostsController(BlogDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Articles
+        // GET: api/Posts
         [HttpGet]
-        public IEnumerable<Article> GetArticles()
+        public IEnumerable<Post> GetPosts()
         {
-            return _context.Articles;
+            return _context.Posts;
         }
 
-        // GET: api/Articles/5
+        // GET: api/Posts/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetArticle([FromRoute] int id)
+        public async Task<IActionResult> GetPost([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var article = await _context.Articles.SingleOrDefaultAsync(m => m.Id == id);
+            var post = await _context.Posts.SingleOrDefaultAsync(m => m.Id == id);
 
-            if (article == null)
+            if (post == null)
             {
                 return NotFound();
             }
 
-            return Ok(article);
+            return Ok(post);
         }
 
-        // PUT: api/Articles/5
+        // PUT: api/Posts/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutArticle([FromRoute] int id, [FromBody] Article article)
+        public async Task<IActionResult> PutPost([FromRoute] int id, [FromBody] Post post)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != article.Id)
+            if (id != post.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(article).State = EntityState.Modified;
+            _context.Entry(post).State = EntityState.Modified;
 
             try
             {
@@ -69,7 +69,7 @@ namespace dotNetCore2WebApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ArticleExists(id))
+                if (!PostExists(id))
                 {
                     return NotFound();
                 }
@@ -82,45 +82,45 @@ namespace dotNetCore2WebApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Articles
+        // POST: api/Posts
         [HttpPost]
-        public async Task<IActionResult> PostArticle([FromBody] Article article)
+        public async Task<IActionResult> PostPost([FromBody] Post post)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Articles.Add(article);
+            _context.Posts.Add(post);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetArticle", new { id = article.Id }, article);
+            return CreatedAtAction("GetPost", new { id = post.Id }, post);
         }
 
-        // DELETE: api/Articles/5
+        // DELETE: api/Posts/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteArticle([FromRoute] int id)
+        public async Task<IActionResult> DeletePost([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var article = await _context.Articles.SingleOrDefaultAsync(m => m.Id == id);
-            if (article == null)
+            var post = await _context.Posts.SingleOrDefaultAsync(m => m.Id == id);
+            if (post == null)
             {
                 return NotFound();
             }
 
-            _context.Articles.Remove(article);
+            _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
 
-            return Ok(article);
+            return Ok(post);
         }
 
-        private bool ArticleExists(int id)
+        private bool PostExists(int id)
         {
-            return _context.Articles.Any(e => e.Id == id);
+            return _context.Posts.Any(e => e.Id == id);
         }
     }
 }
