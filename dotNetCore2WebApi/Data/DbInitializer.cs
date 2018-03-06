@@ -43,6 +43,7 @@ namespace dotNetCore2WebApi.Data
                 Content = "Content",
                 IsPublished = true,
                 CreateDate = DateTime.Now,
+                UpdateDate = DateTime.Now,
                 UserId = context.Users.FirstOrDefault().Id
                 }
             };

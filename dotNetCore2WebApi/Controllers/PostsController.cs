@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using dotNetCore2WebApi.Data;
 using dotNetCore2WebApi.Entities;
+using Microsoft.Extensions.Logging;
+using dotNetCore2WebApi.Models.Posts;
 
 namespace dotNetCore2WebApi.Controllers
 {
@@ -15,16 +17,21 @@ namespace dotNetCore2WebApi.Controllers
     public class PostsController : Controller
     {
         private readonly BlogDbContext _context;
+        private readonly ILogger _logger;
 
-        public PostsController(BlogDbContext context)
+        public PostsController(BlogDbContext context,
+                ILogger<PostsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/Posts
         [HttpGet]
         public IEnumerable<Post> GetPosts()
         {
+            
+            _logger.LogInformation("Ran GET: api/Posts");
             return _context.Posts;
         }
 
@@ -32,6 +39,28 @@ namespace dotNetCore2WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPost([FromRoute] int id)
         {
+            _logger.LogInformation($"Ran GET: api/Posts/{id}");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var post = await _context.Posts.SingleOrDefaultAsync(m => m.Id == id);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+            
+            return Ok(post);
+        }
+
+        // PUT: api/Posts/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutPost([FromRoute] int id, [FromBody] PostRequestModel updatePost)
+        {
+            _logger.LogInformation($"Ran PUT: api/Posts/{id}");
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -44,22 +73,11 @@ namespace dotNetCore2WebApi.Controllers
                 return NotFound();
             }
 
-            return Ok(post);
-        }
-
-        // PUT: api/Posts/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPost([FromRoute] int id, [FromBody] Post post)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != post.Id)
-            {
-                return BadRequest();
-            }
+            post.Title = updatePost.Title;
+            post.Summary = updatePost.Summary;
+            post.Content = updatePost.Content;
+            post.IsPublished = updatePost.IsPublished;
+            post.UpdateDate = DateTime.Now;
 
             _context.Entry(post).State = EntityState.Modified;
 
@@ -84,12 +102,23 @@ namespace dotNetCore2WebApi.Controllers
 
         // POST: api/Posts
         [HttpPost]
-        public async Task<IActionResult> PostPost([FromBody] Post post)
+        public async Task<IActionResult> PostPost([FromBody] PostRequestModel createPost)
         {
+            _logger.LogInformation($"Ran POST: api/Posts");
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            
+            var post = new Post{
+                Title = createPost.Title,
+                Summary = createPost.Summary,
+                Content = createPost.Content,
+                IsPublished = createPost.IsPublished,
+                CreateDate = DateTime.Now,
+                UpdateDate = DateTime.Now,
+                UserId = 1 // TODO: Change when User functionality is added \
+            };
 
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();
@@ -101,6 +130,8 @@ namespace dotNetCore2WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePost([FromRoute] int id)
         {
+            _logger.LogInformation($"Ran DELETE: api/Posts/{id}");
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

@@ -1,21 +1,24 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace dotNetCore2WebApi.Entities
+namespace dotNetCore2WebApi.Models.Posts
 {
-    public class Post
+    public class PostRequestModel
     {
-        public int Id { get; set; }
+        [Required]
         public string Title { get; set; }
+
+        [Required]
         public string Summary { get; set; }
+
+        [Required]
+        [DataType(DataType.Text)]
         public string Content { get; set; }
+
+        [Required]
         public bool IsPublished { get; set; }
-        public DateTime CreateDate { get; set; }
-        public DateTime UpdateDate { get; set; }
-        public int UserId { get; set; }
-        public User User { get; set; }
     }
 }

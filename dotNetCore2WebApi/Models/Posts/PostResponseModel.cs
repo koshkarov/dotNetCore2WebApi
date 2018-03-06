@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace dotNetCore2WebApi.Entities
+namespace dotNetCore2WebApi.Models.Posts
 {
-    public class Post
+    public class PostResponseModel
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -16,6 +16,5 @@ namespace dotNetCore2WebApi.Entities
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
         public int UserId { get; set; }
-        public User User { get; set; }
     }
 }
