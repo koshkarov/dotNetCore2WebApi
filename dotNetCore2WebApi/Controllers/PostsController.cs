@@ -9,11 +9,13 @@ using dotNetCore2WebApi.Data;
 using dotNetCore2WebApi.Entities;
 using Microsoft.Extensions.Logging;
 using dotNetCore2WebApi.Models.Posts;
+using Microsoft.AspNetCore.Cors;
 
 namespace dotNetCore2WebApi.Controllers
 {
     [Produces("application/json")]
     [Route("api/Posts")]
+    [EnableCors("allowLocalClientServer")]
     public class PostsController : Controller
     {
         private readonly BlogDbContext _context;

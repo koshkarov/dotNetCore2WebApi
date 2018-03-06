@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using dotNetCore2WebApi.Data;
+using dotNetCore2WebApi.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Cors;
 
 
 namespace dotNetCore2WebApi
@@ -26,6 +29,9 @@ namespace dotNetCore2WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<BlogDbContext>(options => options.UseSqlServer(Configuraton.GetConnectionString("DefaultConnection")));
+            services.AddCors(options => options.AddPolicy("allowLocalClientServer",
+                policy => policy.WithOrigins("http://localhost:4200")));
+
             services.AddMvc();
         }
 
@@ -37,6 +43,7 @@ namespace dotNetCore2WebApi
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors("allowLocalClientServer");
             app.UseMvc();
 
             app.Run(async (context) =>
